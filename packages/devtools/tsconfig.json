@@ -1,18 +1,37 @@
 {
   "extends": "config/tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "out-tsc",
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
     "baseUrl": ".",
     "paths": {
-      "@floating-ui/dom": ["../dom/src/index.ts"],
-      "@floating-ui/dom/*": ["../dom/src/*"],
-      "extension": ["../../extension/src/index.ts"],
-      "extension/*": ["../../extension/src/*"]
+      "@floating-ui/dom": [
+        "../dom/src/index.ts"
+      ],
+      "@floating-ui/dom/*": [
+        "../dom/src/*"
+      ],
+      "extension": [
+        "../../extension/src/index.ts"
+      ],
+      "extension/*": [
+        "../../extension/src/*"
+      ]
     }
   },
-  "include": ["src"],
+  "include": [
+    "src"
+  ],
   "references": [
-    {"path": "../dom/tsconfig.lib.json"},
-    {"path": "../../extension/tsconfig.lib.json"}
+    {
+      "path": "../dom/tsconfig.lib.json"
+    },
+    {
+      "path": "../../extension/tsconfig.lib.json"
+    }
   ]
 }

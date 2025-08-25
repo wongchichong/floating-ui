@@ -8,17 +8,18 @@
   "main": "./dist/floating-ui.dom.umd.js",
   "module": "./dist/floating-ui.dom.esm.js",
   "unpkg": "./dist/floating-ui.dom.umd.min.js",
-  "types": "./dist/floating-ui.dom.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/floating-ui.dom.d.mts",
-        "default": "./dist/floating-ui.dom.mjs"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/floating-ui.dom.index.mjs"
       },
-      "types": "./dist/floating-ui.dom.d.ts",
-      "module": "./dist/floating-ui.dom.esm.js",
-      "default": "./dist/floating-ui.dom.umd.js"
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/floating-ui.dom.index.js"
+      }
     }
   },
   "sideEffects": false,
@@ -30,12 +31,14 @@
     "format": "prettier --write .",
     "clean": "rimraf dist out-tsc test-results",
     "dev": "vite",
-    "build": "rollup -c",
+    "clean:buildinfo": "del *.tsbuildinfo",
+    "build": "vite build && pnpm clean:buildinfo && pnpm declaration",
     "build:api": "build-api --tsc tsconfig.lib.json",
     "test": "vitest run",
     "test:watch": "vitest watch",
     "publint": "publint",
     "playwright": "playwright test ./test/functional",
+    "declaration": "tsc --build tsconfig.lib.json --declaration --emitDeclarationOnly --declarationMap",
     "prepack": "compat-exports",
     "typecheck": "tsc -b"
   },

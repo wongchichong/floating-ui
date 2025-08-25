@@ -1,0 +1,37 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "useDefineForClassFields": true,
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "allowJs": false,
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "strictNullChecks": false,
+        "noImplicitAny": false,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "woby"
+    },
+    "include": [
+        "src",
+        "lib",
+        "routes.tsx"
+    ],
+    "exclude": [
+        "./**/*.mdx",
+        "node_modules"
+    ]
+}

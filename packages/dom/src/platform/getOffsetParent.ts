@@ -16,11 +16,10 @@ import {isStaticPositioned} from '../utils/isStaticPositioned';
 type Polyfill = (element: HTMLElement) => Element | null;
 
 function getTrueOffsetParent(
-  element: Element,
+  element: HTMLElement,
   polyfill: Polyfill | undefined,
 ): Element | null {
   if (
-    !isHTMLElement(element) ||
     getComputedStyle(element).position === 'fixed'
   ) {
     return null;
@@ -30,17 +29,7 @@ function getTrueOffsetParent(
     return polyfill(element);
   }
 
-  let rawOffsetParent = element.offsetParent;
-
-  // Firefox returns the <html> element as the offsetParent if it's non-static,
-  // while Chrome and Safari return the <body> element. The <body> element must
-  // be used to perform the correct calculations even if the <html> element is
-  // non-static.
-  if (getDocumentElement(element) === rawOffsetParent) {
-    rawOffsetParent = rawOffsetParent.ownerDocument.body;
-  }
-
-  return rawOffsetParent;
+  return element.offsetParent;
 }
 
 // Gets the closest ancestor positioned element. Handles some edge cases,
@@ -66,14 +55,14 @@ export function getOffsetParent(
     return win;
   }
 
-  let offsetParent = getTrueOffsetParent(element, polyfill);
+  let offsetParent = isHTMLElement(element) ? getTrueOffsetParent(element, polyfill) : null;
 
   while (
     offsetParent &&
     isTableElement(offsetParent) &&
     isStaticPositioned(offsetParent)
   ) {
-    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+    offsetParent = getTrueOffsetParent(offsetParent as HTMLElement, polyfill);
   }
 
   if (

@@ -1,0 +1,25 @@
+{
+    "extends": "../../config/tsconfig.base.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "declarationDir": "dist",
+        "declaration": true,
+        "declarationMap": true,
+        "emitDeclarationOnly": true
+    },
+    "include": [
+        "src"
+    ],
+    "references": [
+        {
+            "path": "../woby-dom/tsconfig.lib.json"
+        },
+        {
+            "path": "../core/tsconfig.lib.json"
+        },
+        {
+            "path": "../utils/tsconfig.lib.json"
+        }
+    ]
+}

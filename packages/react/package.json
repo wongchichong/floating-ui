@@ -13,7 +13,7 @@
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/floating-ui.react.d.mts",
+        "types": "./dist/floating-ui.react.d.ts",
         "default": "./dist/floating-ui.react.mjs"
       },
       "types": "./dist/floating-ui.react.d.ts",
@@ -22,7 +22,7 @@
     },
     "./utils": {
       "import": {
-        "types": "./dist/floating-ui.react.utils.d.mts",
+        "types": "./dist/floating-ui.react.utils.d.ts",
         "default": "./dist/floating-ui.react.utils.mjs"
       },
       "types": "./dist/floating-ui.react.utils.d.ts",

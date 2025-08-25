@@ -17,21 +17,19 @@
     "./package.json": "./package.json",
     ".": {
       "import": {
-        "types": "./dist/floating-ui.utils.d.mts",
-        "default": "./dist/floating-ui.utils.mjs"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/floating-ui.utils.index.mjs"
       },
-      "types": "./dist/floating-ui.utils.d.ts",
-      "module": "./dist/floating-ui.utils.esm.js",
-      "default": "./dist/floating-ui.utils.umd.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/floating-ui.utils.index.mjs"
     },
     "./dom": {
       "import": {
-        "types": "./dist/floating-ui.utils.dom.d.mts",
+        "types": "./dist/dom.d.ts",
         "default": "./dist/floating-ui.utils.dom.mjs"
       },
-      "types": "./dist/floating-ui.utils.dom.d.ts",
-      "module": "./dist/floating-ui.utils.dom.esm.js",
-      "default": "./dist/floating-ui.utils.dom.umd.js"
+      "types": "./dist/dom.d.ts",
+      "default": "./dist/floating-ui.utils.dom.mjs"
     }
   },
   "scripts": {
@@ -41,7 +39,13 @@
     "test": "vitest run --globals",
     "test:watch": "vitest watch --globals",
     "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "build:rollup": "rollup -c",
+    "declaration": "tsc --build --force --declaration --emitDeclarationOnly --declarationMap  --verbose",
+    "declaration:watch": "tsc --build --force --declaration --emitDeclarationOnly --declarationMap  --verbose --watch",
+    "watch": "run-p build:watch css:watch",
+    "build:web": "vite build --config=vite.config.web.ts --force --mode production",
+    "//build:only": "pnpm build:main && pnpm build:dom",
+    "build": "vite build && del *.tsbuildinfo && pnpm declaration",
     "build:api": "build-api --tsc tsconfig.lib.json --aec api-extractor.json --aec api-extractor.dom.json --aec api-extractor.react.json",
     "publint": "publint",
     "prepack": "compat-exports",

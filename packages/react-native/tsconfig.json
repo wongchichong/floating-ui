@@ -1,12 +1,23 @@
 {
   "extends": "config/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2020"],
-    "outDir": "out-tsc"
+    "lib": [
+      "ES2020"
+    ],
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true
   },
   "include": [],
   "references": [
-    {"path": "./tsconfig.lib.json"},
-    {"path": "./tsconfig.test.json"}
+    {
+      "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.test.json"
+    }
   ]
 }

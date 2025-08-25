@@ -12,12 +12,10 @@
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "import": {
-        "types": "./dist/floating-ui.core.d.mts",
-        "default": "./dist/floating-ui.core.mjs"
-      },
       "types": "./dist/floating-ui.core.d.ts",
+      "import": "./dist/floating-ui.core.esm.js",
       "module": "./dist/floating-ui.core.esm.js",
+      "require": "./dist/floating-ui.core.umd.js",
       "default": "./dist/floating-ui.core.umd.js"
     }
   },
@@ -31,8 +29,11 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "clean": "rimraf dist out-tsc",
-    "dev": "rollup -c -w",
-    "build": "rollup -c",
+    "clean:buildinfo": "node -e \"const fs = require('fs'); ['tsconfig.lib.tsbuildinfo', 'tsconfig.test.tsbuildinfo'].forEach(f => { if (fs.existsSync(f)) fs.unlinkSync(f); });\"",
+    "build:core": "vite build --config vite.config.core.mts",
+    "build:only": "pnpm build:core",
+    "declaration": "tsc --build tsconfig.lib.json --declaration --emitDeclarationOnly --declarationMap && node -e \"const fs = require('fs'); const path = require('path'); const dist = './dist'; if (fs.existsSync(path.join(dist, 'index.d.ts'))) fs.renameSync(path.join(dist, 'index.d.ts'), path.join(dist, 'floating-ui.core.d.ts')); if (fs.existsSync(path.join(dist, 'index.d.ts.map'))) fs.renameSync(path.join(dist, 'index.d.ts.map'), path.join(dist, 'floating-ui.core.d.ts.map')); if (fs.existsSync(path.join(dist, 'dom.d.ts'))) fs.renameSync(path.join(dist, 'dom.d.ts'), path.join(dist, 'floating-ui.core.browser.d.ts')); if (fs.existsSync(path.join(dist, 'dom.d.ts.map'))) fs.renameSync(path.join(dist, 'dom.d.ts.map'), path.join(dist, 'floating-ui.core.browser.d.ts.map'));\"",
+    "build": "pnpm build:only && pnpm clean:buildinfo && pnpm declaration",
     "build:api": "build-api --tsc tsconfig.lib.json",
     "publint": "publint",
     "prepack": "compat-exports",

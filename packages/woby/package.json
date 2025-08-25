@@ -1,0 +1,88 @@
+{
+    "name": "@floating-ui/woby",
+    "version": "0.27.13",
+    "description": "Floating UI for Woby",
+    "publishConfig": {
+        "access": "public"
+    },
+    "main": "./dist/index.es.js",
+    "module": "./dist/index.es.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.es.js"
+            },
+            "types": "./dist/index.d.ts",
+            "module": "./dist/index.es.js"
+        },
+        "./utils": {
+            "import": {
+                "types": "./dist/utils.d.ts",
+                "default": "./dist/utils.js"
+            },
+            "types": "./dist/utils.d.ts",
+            "module": "./dist/utils.js"
+        }
+    },
+    "sideEffects": false,
+    "files": [
+        "dist",
+        "utils"
+    ],
+    "scripts": {
+        "lint": "eslint .",
+        "format": "prettier --write .",
+        "clean": "rimraf dist out-tsc utils",
+        "test": "vitest run",
+        "test:watch": "vitest watch",
+        "test:browser": "TEST_ENV=browser vitest --browser",
+        "declaration": "tsc --build tsconfig.lib.json --declaration --emitDeclarationOnly --declarationMap --force",
+        "build:only": "vite build",
+        "build": "pnpm build:only && pnpm declaration",
+        "build:api": "build-api --tsc tsconfig.lib.json --aec api-extractor.json --aec api-extractor.utils.json",
+        "dev": "vite",
+        "publint": "publint",
+        "prepack": "compat-exports",
+        "typecheck": "tsc -b"
+    },
+    "author": "atomiks",
+    "license": "MIT",
+    "bugs": "https://github.com/floating-ui/floating-ui",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/floating-ui/floating-ui.git",
+        "directory": "packages/woby"
+    },
+    "homepage": "https://floating-ui.com/docs/woby",
+    "keywords": [
+        "tooltip",
+        "popover",
+        "dropdown",
+        "menu",
+        "popup",
+        "positioning",
+        "woby",
+        "woby-dom"
+    ],
+    "peerDependencies": {
+        "woby": ">=0.58.14"
+    },
+    "dependencies": {
+        "@floating-ui/core": "workspace:^",
+        "@floating-ui/utils": "workspace:^",
+        "@floating-ui/woby-dom": "workspace:^",
+        "tabbable": "^6.0.0"
+    },
+    "devDependencies": {
+        "@babel/preset-env": "^7.23.9",
+        "@babel/preset-typescript": "^7.23.3",
+        "@testing-library/jest-dom": "^6.2.0",
+        "@testing-library/user-event": "^14.6.1",
+        "config": "workspace:*",
+        "resize-observer-polyfill": "^1.5.1",
+        "woby": "^0.58.16"
+    }
+}

@@ -1,12 +1,25 @@
 {
   "extends": "config/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2020"],
-    "outDir": "out-tsc",
+    "lib": [
+      "ES2020"
+    ],
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
     "composite": true,
     "jsx": "react-jsx",
     "types": []
   },
-  "files": ["index.test-d.tsx"],
-  "references": [{"path": "./tsconfig.lib.json"}]
+  "files": [
+    "index.test-d.tsx"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ]
 }

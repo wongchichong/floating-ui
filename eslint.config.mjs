@@ -69,5 +69,13 @@ export default tseslint.config(
       'react-hooks/exhaustive-deps': 'off',
     },
   },
+  {
+    files: ['packages/woby/**/*.{js,ts,tsx}'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+      'react-hooks/exhaustive-deps': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+    },
+  },
   prettierRecommended,
 );

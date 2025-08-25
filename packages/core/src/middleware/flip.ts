@@ -1,4 +1,4 @@
-import type {Placement} from '@floating-ui/utils';
+import type { Placement } from '@floating-ui/utils'
 import {
   evaluate,
   getAlignmentSides,
@@ -7,11 +7,11 @@ import {
   getOppositePlacement,
   getSide,
   getSideAxis,
-} from '@floating-ui/utils';
+} from '@floating-ui/utils'
 
-import type {DetectOverflowOptions} from '../detectOverflow';
-import {detectOverflow} from '../detectOverflow';
-import type {Derivable, Middleware} from '../types';
+import type { DetectOverflowOptions } from '../detectOverflow'
+import { detectOverflow } from '../detectOverflow'
+import type { Derivable, Middleware } from '../types'
 
 export interface FlipOptions extends DetectOverflowOptions {
   /**
@@ -19,7 +19,7 @@ export interface FlipOptions extends DetectOverflowOptions {
    * whether overflow along this axis is checked to perform a flip.
    * @default true
    */
-  mainAxis?: boolean;
+  mainAxis?: boolean
   /**
    * The axis that runs along the alignment of the floating element. Determines
    * whether overflow along this axis is checked to perform a flip.
@@ -28,29 +28,29 @@ export interface FlipOptions extends DetectOverflowOptions {
    * - `'alignment'`: Whether to check cross axis overflow for alignment flipping only.
    * @default true
    */
-  crossAxis?: boolean | 'alignment';
+  crossAxis?: boolean | 'alignment'
   /**
    * Placements to try sequentially if the preferred `placement` does not fit.
    * @default [oppositePlacement] (computed)
    */
-  fallbackPlacements?: Array<Placement>;
+  fallbackPlacements?: Array<Placement>
   /**
    * What strategy to use when no placements fit.
    * @default 'bestFit'
    */
-  fallbackStrategy?: 'bestFit' | 'initialPlacement';
+  fallbackStrategy?: 'bestFit' | 'initialPlacement'
   /**
    * Whether to allow fallback to the perpendicular axis of the preferred
    * placement, and if so, which side direction along the axis to prefer.
    * @default 'none' (disallow fallback)
    */
-  fallbackAxisSideDirection?: 'none' | 'start' | 'end';
+  fallbackAxisSideDirection?: 'none' | 'start' | 'end'
   /**
    * Whether to flip to placements with the opposite alignment if they fit
    * better.
    * @default true
    */
-  flipAlignment?: boolean;
+  flipAlignment?: boolean
 }
 
 /**
@@ -72,7 +72,7 @@ export const flip = (
       initialPlacement,
       platform,
       elements,
-    } = state;
+    } = state
 
     const {
       mainAxis: checkMainAxis = true,
@@ -82,28 +82,28 @@ export const flip = (
       fallbackAxisSideDirection = 'none',
       flipAlignment = true,
       ...detectOverflowOptions
-    } = evaluate(options, state);
+    } = evaluate(options, state)
 
     // If a reset by the arrow was caused due to an alignment offset being
     // added, we should skip any logic now since `flip()` has already done its
     // work.
     // https://github.com/floating-ui/floating-ui/issues/2549#issuecomment-1719601643
     if (middlewareData.arrow?.alignmentOffset) {
-      return {};
+      return {}
     }
 
-    const side = getSide(placement);
-    const initialSideAxis = getSideAxis(initialPlacement);
-    const isBasePlacement = getSide(initialPlacement) === initialPlacement;
-    const rtl = await platform.isRTL?.(elements.floating);
+    const side = getSide(placement)
+    const initialSideAxis = getSideAxis(initialPlacement)
+    const isBasePlacement = getSide(initialPlacement) === initialPlacement
+    const rtl = await platform.isRTL?.(elements.floating)
 
     const fallbackPlacements =
       specifiedFallbackPlacements ||
       (isBasePlacement || !flipAlignment
         ? [getOppositePlacement(initialPlacement)]
-        : getExpandedPlacements(initialPlacement));
+        : getExpandedPlacements(initialPlacement))
 
-    const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== 'none';
+    const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== 'none'
 
     if (!specifiedFallbackPlacements && hasFallbackAxisSideDirection) {
       fallbackPlacements.push(
@@ -113,37 +113,37 @@ export const flip = (
           fallbackAxisSideDirection,
           rtl,
         ),
-      );
+      )
     }
 
-    const placements = [initialPlacement, ...fallbackPlacements];
+    const placements = [initialPlacement, ...fallbackPlacements]
 
-    const overflow = await detectOverflow(state, detectOverflowOptions);
+    const overflow = await detectOverflow(state, detectOverflowOptions)
 
-    const overflows = [];
-    let overflowsData = middlewareData.flip?.overflows || [];
+    const overflows = [] as number[]
+    let overflowsData = middlewareData.flip?.overflows || []
 
     if (checkMainAxis) {
-      overflows.push(overflow[side]);
+      overflows.push(overflow[side])
     }
 
     if (checkCrossAxis) {
-      const sides = getAlignmentSides(placement, rects, rtl);
-      overflows.push(overflow[sides[0]], overflow[sides[1]]);
+      const sides = getAlignmentSides(placement, rects, rtl)
+      overflows.push(overflow[sides[0]], overflow[sides[1]])
     }
 
-    overflowsData = [...overflowsData, {placement, overflows}];
+    overflowsData = [...overflowsData, { placement, overflows }]
 
     // One or more sides is overflowing.
     if (!overflows.every((side) => side <= 0)) {
-      const nextIndex = (middlewareData.flip?.index || 0) + 1;
-      const nextPlacement = placements[nextIndex];
+      const nextIndex = (middlewareData.flip?.index || 0) + 1
+      const nextPlacement = placements[nextIndex]
 
       if (nextPlacement) {
         const ignoreCrossAxisOverflow =
           checkCrossAxis === 'alignment'
             ? initialSideAxis !== getSideAxis(nextPlacement)
-            : false;
+            : false
 
         if (
           !ignoreCrossAxisOverflow ||
@@ -164,7 +164,7 @@ export const flip = (
             reset: {
               placement: nextPlacement,
             },
-          };
+          }
         }
       }
 
@@ -172,7 +172,7 @@ export const flip = (
       // then find the placement that fits the best on the main crossAxis side.
       let resetPlacement = overflowsData
         .filter((d) => d.overflows[0] <= 0)
-        .sort((a, b) => a.overflows[1] - b.overflows[1])[0]?.placement;
+        .sort((a, b) => a.overflows[1] - b.overflows[1])[0]?.placement
 
       // Otherwise fallback.
       if (!resetPlacement) {
@@ -181,15 +181,15 @@ export const flip = (
             const placement = overflowsData
               .filter((d) => {
                 if (hasFallbackAxisSideDirection) {
-                  const currentSideAxis = getSideAxis(d.placement);
+                  const currentSideAxis = getSideAxis(d.placement)
                   return (
                     currentSideAxis === initialSideAxis ||
                     // Create a bias to the `y` side axis due to horizontal
                     // reading directions favoring greater width.
                     currentSideAxis === 'y'
-                  );
+                  )
                 }
-                return true;
+                return true
               })
               .map(
                 (d) =>
@@ -200,15 +200,15 @@ export const flip = (
                       .reduce((acc, overflow) => acc + overflow, 0),
                   ] as const,
               )
-              .sort((a, b) => a[1] - b[1])[0]?.[0];
+              .sort((a, b) => a[1] - b[1])[0]?.[0]
             if (placement) {
-              resetPlacement = placement;
+              resetPlacement = placement
             }
-            break;
+            break
           }
           case 'initialPlacement':
-            resetPlacement = initialPlacement;
-            break;
+            resetPlacement = initialPlacement
+            break
           default:
         }
       }
@@ -218,10 +218,10 @@ export const flip = (
           reset: {
             placement: resetPlacement,
           },
-        };
+        }
       }
     }
 
-    return {};
+    return {}
   },
-});
+})

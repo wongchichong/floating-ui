@@ -1,9 +1,21 @@
 {
   "extends": "config/tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "out-tsc",
+    "rootDir": "src",
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
     "jsx": "react-jsx"
   },
-  "include": ["test", "vite.config.mts"],
-  "references": [{"path": "./tsconfig.lib.json"}]
+  "include": [
+    "test",
+    "vite.config.mts"
+  ],
+  "references": [
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ]
 }

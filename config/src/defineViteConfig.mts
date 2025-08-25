@@ -1,11 +1,11 @@
-import path from 'path';
-import {type ViteUserConfig, defineConfig} from 'vitest/config';
+import path from 'path'
+import { type ViteUserConfig, defineConfig } from 'vitest/config'
 
 // root path of the monorepo
 const basePath = path.resolve(
   path.dirname(new URL(import.meta.url).pathname),
   '../../../',
-);
+)
 
 export const defineViteConfig = (config: ViteUserConfig): ViteUserConfig =>
   defineConfig({
@@ -21,7 +21,7 @@ export const defineViteConfig = (config: ViteUserConfig): ViteUserConfig =>
           'packages/devtools/src',
         ),
         '@floating-ui/core': path.resolve(basePath, 'packages/core/src'),
-        '@floating-ui/dom': path.resolve(basePath, 'packages/dom/src'),
+        // '@floating-ui/dom': path.resolve(basePath, 'packages/dom/src'),
         '@floating-ui/react-dom': path.resolve(
           basePath,
           'packages/react-dom/src',
@@ -36,4 +36,4 @@ export const defineViteConfig = (config: ViteUserConfig): ViteUserConfig =>
       },
       ...config.test,
     },
-  });
+  })

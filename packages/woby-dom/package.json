@@ -1,0 +1,70 @@
+{
+    "name": "@floating-ui/woby-dom",
+    "version": "2.1.4",
+    "description": "Floating UI for Woby DOM",
+    "publishConfig": {
+        "access": "public"
+    },
+    "main": "./dist/floating-ui.woby-dom.umd.js",
+    "module": "./dist/floating-ui.woby-dom.esm.js",
+    "unpkg": "./dist/floating-ui.woby-dom.umd.min.js",
+    "types": "./dist/floating-ui.woby-dom.d.ts",
+    "exports": {
+        "./package.json": "./package.json",
+        ".": {
+            "import": {
+                "types": "./dist/floating-ui.woby-dom.d.mts",
+                "default": "./dist/floating-ui.woby-dom.mjs"
+            },
+            "types": "./dist/floating-ui.woby-dom.d.ts",
+            "module": "./dist/floating-ui.woby-dom.esm.js",
+            "default": "./dist/floating-ui.woby-dom.umd.js"
+        }
+    },
+    "sideEffects": false,
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "lint": "eslint .",
+        "format": "prettier --write .",
+        "clean": "rimraf dist out-tsc",
+        "test": "vitest run",
+        "test:watch": "vitest watch",
+        "build:dom": "vite build --config vite.config.mts",
+        "declaration": "tsc --build tsconfig.lib.json --declaration --emitDeclarationOnly --declarationMap && node -e \"const fs = require('fs'); const path = require('path'); const dist = './dist'; if (fs.existsSync(path.join(dist, 'index.d.ts'))) fs.renameSync(path.join(dist, 'index.d.ts'), path.join(dist, 'floating-ui.woby-dom.d.ts')); if (fs.existsSync(path.join(dist, 'index.d.ts.map'))) fs.renameSync(path.join(dist, 'index.d.ts.map'), path.join(dist, 'floating-ui.woby-dom.d.ts.map')); fs.copyFileSync(path.join(dist, 'floating-ui.woby-dom.esm.js'), path.join(dist, 'floating-ui.woby-dom.mjs'));\"",
+        "build": "pnpm build:dom && del *.tsbuildinfo && pnpm declaration",
+        "build:api": "build-api --tsc tsconfig.lib.json",
+        "publint": "publint",
+        "prepack": "compat-exports",
+        "typecheck": "tsc -b"
+    },
+    "author": "atomiks",
+    "license": "MIT",
+    "bugs": "https://github.com/floating-ui/floating-ui",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/floating-ui/floating-ui.git",
+        "directory": "packages/woby-dom"
+    },
+    "homepage": "https://floating-ui.com/docs/woby-dom",
+    "keywords": [
+        "tooltip",
+        "popover",
+        "dropdown",
+        "menu",
+        "popup",
+        "positioning",
+        "woby"
+    ],
+    "peerDependencies": {
+        "woby": ">=0.58.14"
+    },
+    "dependencies": {
+        "@floating-ui/dom": "workspace:^"
+    },
+    "devDependencies": {
+        "config": "workspace:*",
+        "woby": "^0.58.16"
+    }
+}
