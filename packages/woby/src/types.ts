@@ -1,7 +1,10 @@
 import type { Observable, ObservableMaybe } from 'woby'
 import type {
     ComputePositionReturn,
-    VirtualElement
+    VirtualElement,
+    Strategy,
+    Placement,
+    MiddlewareData,
 } from '@floating-ui/dom'
 
 // Re-export essential types from woby-dom
@@ -15,6 +18,7 @@ export type {
     Boundary,
     ClientRectObject,
     ComputePositionConfig,
+    ComputePositionReturn,
     Coords,
     DetectOverflowOptions,
     Dimensions,
@@ -44,7 +48,7 @@ export type {
     SideObject,
     SizeOptions,
     Strategy,
-} from '@floating-ui/woby-dom'
+} from '@floating-ui/dom'
 
 export {
     arrow,
@@ -61,7 +65,7 @@ export {
     platform,
     shift,
     size,
-} from '@floating-ui/woby-dom'
+} from '@floating-ui/dom'
 
 type Prettify<T> = {
     [K in keyof T]: T[K]
@@ -112,8 +116,7 @@ export interface ContextData {
 
 export type FloatingContext<RT extends ReferenceType = ReferenceType> = {
     position: Omit<UseFloatingReturn<RT>, 'reference' | 'floating'>
-    open: ObservableMaybe<boolean>
-    onOpenChange(open: boolean, event?: Event, reason?: OpenChangeReason): void
+    open: Observable<boolean>
     events: FloatingEvents
     dataRef: Observable<ContextData>
     nodeId: string | undefined
@@ -136,9 +139,9 @@ export interface FloatingTreeType<RT extends ReferenceType = ReferenceType> {
 }
 
 export interface ElementProps {
-    reference?: any
-    floating?: any
-    item?: any | ((props: any) => any)
+    reference?: Record<string, any>
+    floating?: Record<string, any>
+    item?: Record<string, any> | ((props: Record<string, any>) => Record<string, any>)
 }
 
 export type ReferenceType = Element | VirtualElement
@@ -150,20 +153,35 @@ export type UseFloatingData = Prettify<
 export type UseFloatingReturn<RT extends ReferenceType = ReferenceType> =
     Prettify<
         {
-            // Context properties (flattened)
-            open: ObservableMaybe<boolean>
-            onOpenChange: (open: boolean, event?: Event, reason?: OpenChangeReason) => void
-            events: FloatingEvents
-            reference: ObservableMaybe<RT | null>
-            floating: ObservableMaybe<HTMLElement | null>
+            // Flattened data properties from woby-dom
+            x: Observable<number>
+            y: Observable<number>
+            strategy: Observable<Strategy>
+            placement: Observable<Placement>
+            middlewareData: Observable<MiddlewareData>
+            isPositioned: Observable<boolean>
 
-            // Removed separate position property and using intersection with woby-dom's UseFloatingReturn
-            // This correctly represents the structure since we're spreading the position object
-        } & import('@floating-ui/woby-dom').UseFloatingReturn<RT>
+            // Woby-specific properties
+            open: Observable<boolean>
+            reason: Observable<OpenChangeReason | null>
+            events: FloatingEvents
+            reference: Observable<RT | null>
+            floating: Observable<HTMLElement | null>
+
+            /**
+             * Update the position of the floating element, re-rendering the component
+             * if required.
+             */
+            update: () => void
+            /**
+             * Pre-configured positioning styles observable to apply to the floating element.
+             */
+            floatingStyles: Observable<Record<string, any>>
+        }
     >
 
 export interface UseFloatingOptions<RT extends ReferenceType = ReferenceType>
-    extends Omit<import('@floating-ui/woby-dom').UseFloatingOptions<RT>, 'elements' | 'reference' | 'floating'> {
+    extends Omit<import('@floating-ui/dom').ComputePositionConfig, 'elements' | 'reference' | 'floating'> {
     // Removed rootContext property since useFloatingRootContext hook has been eliminated
     /**
      * Externally passed reference element. Store in state.
@@ -174,10 +192,17 @@ export interface UseFloatingOptions<RT extends ReferenceType = ReferenceType>
      */
     floating: ObservableMaybe<HTMLElement | null>
     /**
-     * An event callback that is invoked when the floating element is opened or
-     * closed.
+     * The `open` state of the floating element to synchronize with the
+     * `isPositioned` value.
+     * @default false
      */
-    onOpenChange?(open: boolean, event?: Event, reason?: OpenChangeReason): void
+    open?: ObservableMaybe<boolean>
+    /**
+     * Whether to use `transform` for positioning instead of `top` and `left`
+     * (layout) in the `floatingStyles` object.
+     * @default true
+     */
+    transform?: boolean
     /**
      * Unique node id when using `FloatingTree`.
      * Note: This property is not currently used in the woby implementation.

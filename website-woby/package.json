@@ -8,6 +8,9 @@
         "dev": "vite",
         "declaration": "tsc --build --declaration --emitDeclarationOnly --declarationMap --force --noEmit",
         "build": "vite build && pnpm declaration",
+        "build:woby": "cd ../packages/woby && pnpm build",
+        "build:woby-dom": "cd ../packages/woby-dom && pnpm build",
+        "build:all": "pnpm build:woby-dom && pnpm build:woby && pnpm build",
         "preview": "vite preview"
     },
     "author": "",

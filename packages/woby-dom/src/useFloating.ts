@@ -1,5 +1,6 @@
 import { computePosition } from '@floating-ui/dom'
 import { $, $$, useEffect, useMemo, isObservable, type Observable, type ObservableMaybe } from 'woby'
+import { Observant, ObservantMaybe } from 'use-woby'
 
 import type {
     ComputePositionConfig,
@@ -7,6 +8,10 @@ import type {
     UseFloatingData,
     UseFloatingOptions,
     UseFloatingReturn,
+    Strategy,
+    Placement,
+    MiddlewareData,
+    OpenChangeReason,
 } from './types'
 import { deepEqual } from './utils/deepEqual'
 import { getDPR } from './utils/getDPR'
@@ -18,46 +23,39 @@ import { useObservable } from './utils/useObservable'
  * @see https://floating-ui.com/docs/useFloating
  */
 export function useFloating<RT extends ReferenceType = ReferenceType>(
-    options: UseFloatingOptions = {},
+    options: ObservantMaybe<UseFloatingOptions> = {},
 ): UseFloatingReturn<RT> {
-    const {
-        placement = 'bottom',
-        strategy = 'absolute',
-        middleware = [],
-        platform,
-        reference: externalReference,
-        floating: externalFloating,
-        transform = true,
-        whileElementsMounted,
-        open,
-    } = options
+    // Flatten all options into individual observables
+    const placement = useObservable((options.placement || 'bottom') as Placement)
+    const strategy = useObservable((options.strategy || 'absolute') as Strategy)
+    const middleware = useObservable(options.middleware ?? [])
+    const platform = useObservable(options.platform)
+    const externalReference = useObservable(options.reference)
+    const externalFloating = useObservable(options.floating)
+    const transform = useObservable(options.transform ?? true)
+    const whileElementsMounted = useObservable(options.whileElementsMounted)
+    const open = useObservable((options.open || false) as boolean)
 
-    const data = $<UseFloatingData>({
-        x: 0,
-        y: 0,
-        strategy,
-        placement,
-        middlewareData: {},
-        isPositioned: false,
-    })
+    // Individual data observables
+    const x = $(0)
+    const y = $(0)
+    const middlewareData = $({} as MiddlewareData)
+    const isPositioned = $(false)
+    const reason = $(null as OpenChangeReason | null)
 
-    const latestMiddleware = $(middleware)
+    const latestMiddleware = $((options.middleware ?? []) as any)
 
     // Watch for middleware changes
     useMemo(() => {
-        if (!deepEqual($$(latestMiddleware), middleware)) {
-            latestMiddleware(middleware)
+        const middlewareValue = $$(middleware)
+        if (!deepEqual($$(latestMiddleware), middlewareValue)) {
+            latestMiddleware(middlewareValue as any)
         }
     })
 
     // Use useObservable hook to handle external references
-    const reference = useObservable(externalReference)
+    const reference = useObservable(externalReference) as Observable<RT | null | undefined>
     const floating = useObservable(externalFloating)
-
-    const hasWhileElementsMounted = whileElementsMounted != null
-    // const whileElementsMountedRef = whileElementsMounted
-    const platformRef = useObservable(platform)
-    const openRef = useObservable(open)
 
     const isMounted = $(true)
 
@@ -70,14 +68,14 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
         }
 
         const config: ComputePositionConfig = {
-            placement,
-            strategy,
-            middleware: $$(latestMiddleware),
+            placement: $$(placement),
+            strategy: $$(strategy),
+            middleware: $$(latestMiddleware) as any,
         }
 
-        const platformRefValue = $$(platformRef)
-        if (platformRefValue) {
-            config.platform = platformRefValue
+        const platformValue = $$(platform)
+        if (platformValue) {
+            config.platform = platformValue
         }
 
         computePosition(refEl, floatEl, config).then(
@@ -88,10 +86,15 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
                     // but still mounted (such as when transitioning out). To ensure
                     // `isPositioned` will be `false` initially on the next open, avoid
                     // setting it to `true` when `open === false` (must be specified).
-                    isPositioned: $$(openRef) !== false,
+                    isPositioned: $$(open) !== false,
                 }
-                if ($$(isMounted) && !deepEqual($$(data), fullData)) {
-                    data(fullData)
+
+                if ($$(isMounted)) {
+                    // Update individual observables
+                    x(fullData.x)
+                    y(fullData.y)
+                    middlewareData(fullData.middlewareData)
+                    isPositioned(fullData.isPositioned)
                 }
             },
         )
@@ -99,8 +102,9 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
 
     // Handle open state changes
     useEffect(() => {
-        if (open === false && $$(data).isPositioned) {
-            data({ ...$$(data), isPositioned: false })
+        const openValue = $$(open)
+        if (openValue === false && $$(isPositioned)) {
+            isPositioned(false)
         }
     })
 
@@ -108,10 +112,11 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
     useEffect(() => {
         const referenceEl = $$(reference)
         const floatingEl = $$(floating)
+        const whileMounted = $$(whileElementsMounted)
 
         if (referenceEl && floatingEl) {
-            if (whileElementsMounted) {
-                return whileElementsMounted(referenceEl, floatingEl, update)
+            if (whileMounted) {
+                return whileMounted(referenceEl, floatingEl, update)
             }
 
             update()
@@ -119,8 +124,9 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
     })
 
     const floatingStyles = useMemo(() => {
+        const strategyValue = $$(strategy)
         const initialStyles = {
-            position: strategy,
+            position: strategyValue,
             left: 0,
             top: 0,
         }
@@ -130,30 +136,45 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
             return initialStyles
         }
 
-        const currentData = $$(data)
-        const x = roundByDPR(floatingElement, currentData.x)
-        const y = roundByDPR(floatingElement, currentData.y)
+        // Get the current values directly
+        const xValue = $$(x)
+        const yValue = $$(y)
 
-        if (transform) {
+        // Calculate the rounded values
+        const roundedX = roundByDPR(floatingElement, xValue)
+        const roundedY = roundByDPR(floatingElement, yValue)
+        const transformValue = $$(transform)
+
+        if (transformValue) {
             return {
                 ...initialStyles,
-                transform: `translate(${x}px, ${y}px)`,
+                transform: `translate(${roundedX}px, ${roundedY}px)`,
                 ...(getDPR(floatingElement) >= 1.5 && { willChange: 'transform' }),
             }
         }
 
         return {
-            position: strategy,
-            left: x,
-            top: y,
+            position: strategyValue,
+            left: roundedX,
+            top: roundedY,
         }
     })
 
+    // Flatten the return object
     return {
-        data,
+        // Individual data properties (flattened)
+        x,
+        y,
+        strategy,
+        placement,
+        middlewareData,
+        isPositioned,
+        // Methods
         update,
-        reference: reference as Observable<RT | null>,
-        floating: floating as Observable<HTMLElement | null>,
+        open,
+        reason,
+        reference,
+        floating,
         floatingStyles,
     }
 }

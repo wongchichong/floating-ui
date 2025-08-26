@@ -2,8 +2,24 @@ import type {
     ComputePositionConfig,
     ComputePositionReturn,
     VirtualElement,
+    Strategy,
+    Placement,
+    MiddlewareData,
 } from '@floating-ui/dom'
 import type { Observable, ObservableMaybe } from 'woby'
+
+// Define OpenChangeReason locally instead of importing it
+export type OpenChangeReason =
+    | 'outside-press'
+    | 'escape-key'
+    | 'ancestor-scroll'
+    | 'reference-press'
+    | 'click'
+    | 'hover'
+    | 'focus'
+    | 'focus-out'
+    | 'list-navigation'
+    | 'safe-polygon'
 
 export type { ArrowOptions } from './arrow'
 export { arrow } from './arrow'
@@ -79,10 +95,16 @@ export type ReferenceType = Element | VirtualElement
 export type UseFloatingReturn<RT extends ReferenceType = ReferenceType> =
     Prettify<
         {
-            /**
-             * Data observable containing positioning information.
-             */
-            data: Observable<UseFloatingData>
+            // Flattened data properties
+            x: Observable<number>
+            y: Observable<number>
+            strategy: Observable<Strategy>
+            placement: Observable<Placement>
+            middlewareData: Observable<MiddlewareData>
+            isPositioned: Observable<boolean>
+            open: Observable<boolean>
+            reason: Observable<OpenChangeReason | null>
+
             /**
              * Update the position of the floating element, re-rendering the component
              * if required.
@@ -95,11 +117,11 @@ export type UseFloatingReturn<RT extends ReferenceType = ReferenceType> =
             /**
              * A Woby ref to the reference element.
              */
-            reference: Observable<RT | null>
+            reference: Observable<RT | null | undefined>
             /**
              * A Woby ref to the floating element.
              */
-            floating: Observable<HTMLElement | null>
+            floating: Observable<HTMLElement | null | undefined>
         }
     >
 

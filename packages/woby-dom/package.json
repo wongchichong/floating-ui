@@ -61,7 +61,8 @@
         "woby": ">=0.58.14"
     },
     "dependencies": {
-        "@floating-ui/dom": "workspace:^"
+        "@floating-ui/dom": "workspace:^",
+        "use-woby": "^0.0.22"
     },
     "devDependencies": {
         "config": "workspace:*",

@@ -102,6 +102,20 @@ Use with [Vue](https://floating-ui.com/docs/vue).
 npm install @floating-ui/vue
 ```
 
+### Woby
+
+Use with [Woby](https://woby.dev).
+
+#### Woby DOM
+
+```shell
+# Positioning + interactions
+npm install @floating-ui/woby
+
+# Positioning only (smaller size)
+npm install @floating-ui/woby-dom
+```
+
 ### Canvas or other platforms
 
 If you're targeting a platform other than the vanilla DOM (web), React, or React
@@ -142,6 +156,11 @@ as much as possible.
 
 `pnpm run --filter @floating-ui/react dev` in the root will launch the
 `@floating-ui/react` development tests at `http://localhost:1234`.
+
+#### Woby
+
+`pnpm run --filter @floating-ui/woby dev` in the root will launch the
+`@floating-ui/woby` development website at `http://localhost:1234`.
 
 ## Credits
 

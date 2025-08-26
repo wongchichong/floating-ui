@@ -1,1 +1,1 @@
-{"root":["./src/main.tsx"],"version":"5.9.2"}
+{"root":["./src/clickexample.tsx","./src/main.tsx","./src/examples/clientpointexample.tsx","./src/examples/clientpointwithhoverexample.tsx","./src/examples/dismissexample.tsx","./src/examples/focusexample.tsx","./src/examples/hoverexample.tsx","./src/examples/listnavigationexample.tsx","./src/examples/mergerefsexample.tsx","./src/examples/roleexample.tsx","./src/examples/transitionexample.tsx","./src/examples/typeaheadexample.tsx"],"version":"5.9.2"}

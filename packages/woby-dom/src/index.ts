@@ -18,3 +18,4 @@ export {
     shift,
     size,
 } from './reactiveMiddleware'
+export { isMouseLikePointerType, isTypeableElement } from './utils'

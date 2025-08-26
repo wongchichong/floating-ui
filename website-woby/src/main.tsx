@@ -1,6 +1,15 @@
 import { render } from 'woby'
 import { $, $$, useEffect } from 'woby'
-import { useFloating, offset, flip, shift } from '@floating-ui/woby'
+import { useFloating, offset, flip, shift, autoPlacement } from '@floating-ui/woby'
+import { ClickExample } from './examples/ClickExample'
+import { ClientPointExample } from './examples/ClientPointExample'
+import { ClientPointWithHoverExample } from './examples/ClientPointWithHoverExample'
+import { DismissExample } from './examples/DismissExample'
+import { FocusExample } from './examples/FocusExample'
+import { HoverExample } from './examples/HoverExample'
+import { ListNavigationExample } from './examples/ListNavigationExample'
+import { MergeRefsExample } from './examples/MergeRefsExample'
+// Removed non-working examples: RoleExample, TransitionExample, TypeaheadExample
 import './assets/global.css'
 
 function App() {
@@ -10,8 +19,8 @@ function App() {
 
     const floating = useFloating({
         open: open,
-        placement: 'bottom',
-        middleware: [offset(10), flip(), shift()],
+        // placement: 'left-end',
+        middleware: [offset(10), flip(), shift(), autoPlacement()],
         reference: referenceRef,
         floating: floatingRef,
     })
@@ -70,9 +79,121 @@ function App() {
                     </div>
                 </div>
 
+                {/* New Click Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Click Interaction Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useClick</code> and <code className="bg-gray-100 px-1 rounded">useInteractions</code> hooks.
+                    </p>
+
+                    <ClickExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Click to toggle the tooltip</p>
+                    </div>
+                </div>
+
+                {/* ClientPoint Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Client Point Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useClientPoint</code> hook.
+                    </p>
+
+                    <ClientPointExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Move mouse over the button to see the tooltip follow your cursor</p>
+                    </div>
+                </div>
+
+                {/* ClientPoint with Hover Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Client Point with Hover Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of both <code className="bg-gray-100 px-1 rounded">useClientPoint</code> and <code className="bg-gray-100 px-1 rounded">useHover</code> hooks together.
+                    </p>
+
+                    <ClientPointWithHoverExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Hover over the button to see the tooltip follow your cursor</p>
+                    </div>
+                </div>
+
+                {/* Dismiss Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Dismiss Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useDismiss</code> hook.
+                    </p>
+
+                    <DismissExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Click the button to open popover, then click outside or press Escape to dismiss</p>
+                    </div>
+                </div>
+
+                {/* Focus Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Focus Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useFocus</code> hook.
+                    </p>
+
+                    <FocusExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Tab to focus the button to see the tooltip</p>
+                    </div>
+                </div>
+
+                {/* Hover Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Hover Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useHover</code> hook.
+                    </p>
+
+                    <HoverExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Hover over the button to see the tooltip</p>
+                    </div>
+                </div>
+
+                {/* List Navigation Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">List Navigation Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useListNavigation</code> hook.
+                    </p>
+
+                    <ListNavigationExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Click the button to open dropdown, then use arrow keys to navigate</p>
+                    </div>
+                </div>
+
+                {/* Merge Refs Example Section */}
+                <div className="bg-white rounded-lg p-8 shadow-lg mt-8">
+                    <h2 className="text-2xl font-semibold mb-4">Merge Refs Demo</h2>
+                    <p className="text-gray-600 mb-4">
+                        This example demonstrates the use of the <code className="bg-gray-100 px-1 rounded">useMergeRefs</code> hook.
+                    </p>
+
+                    <MergeRefsExample />
+
+                    <div className="mt-4 text-sm text-gray-600">
+                        <p><strong>Interaction:</strong> Click the button to see how multiple refs can be merged</p>
+                    </div>
+                </div>
+
                 <div className="text-center mt-8">
                     <p className="text-gray-500">
-                        This is a basic implementation of Floating UI for Woby.
+                        This is a comprehensive implementation of Floating UI for Woby.
                     </p>
                 </div>
             </div>

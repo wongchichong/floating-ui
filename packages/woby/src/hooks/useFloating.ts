@@ -20,30 +20,7 @@ import type {
 export function useFloating<RT extends ReferenceType = ReferenceType>(
     options: UseFloatingOptions<RT> = {} as UseFloatingOptions<RT>,
 ): UseFloatingReturn<RT> {
-    const {
-        reference,
-        floating,
-        placement,
-        strategy,
-        middleware,
-        platform,
-        whileElementsMounted,
-        open,
-        transform,
-        onOpenChange: onOpenChangeProp,
-    } = options
-
-    const position = usePosition<RT>({
-        placement,
-        strategy,
-        middleware,
-        platform,
-        whileElementsMounted: whileElementsMounted as any,
-        open,
-        transform,
-        reference,
-        floating,
-    })
+    const position = usePosition<RT>(options as any)
 
     // Simple event emitter
     const events = {
@@ -52,21 +29,16 @@ export function useFloating<RT extends ReferenceType = ReferenceType>(
         off: (event: string, handler: (data: any) => void) => { },
     }
 
-    // Open state as observable
-    const openState = isObservable(open) ? open : $(open ?? false)
+    // Watch for open state changes and emit events
+    // useEffect(() => {
+    //     // This will trigger whenever the open state changes
+    //     const openValue = $$(position.open)
+    //     events.emit('openchange', { open: openValue })
+    // })
 
-    // On open change handler
-    const onOpenChange = (openValue: boolean, event?: Event, reason?: any) => {
-        events.emit('openchange', { open: openValue, event, reason, nested: false })
-        if (onOpenChangeProp) {
-            onOpenChangeProp(openValue, event, reason)
-        }
-    }
-
+    // Return the flattened structure with Woby-specific properties
     return {
         ...position,
-        open: openState,
-        onOpenChange,
         events,
     } as UseFloatingReturn<RT>
 }
