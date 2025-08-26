@@ -19,10 +19,10 @@ export function FocusExample() {
         visibleOnly: true,
     })
 
-    const hover = useHover(floating, {
-        move: true,
-        delay: { open: 100, close: 200 },
-    })
+    // const hover = useHover(floating, {
+    //     move: true,
+    //     delay: { open: 100, close: 200 },
+    // })
 
     // Merge all interactions
     const { getReferenceProps, getFloatingProps } = useInteractions([focus])
